@@ -1,0 +1,58 @@
+from fastapi import APIRouter, Depends, Request
+
+from app.cache import cache_response
+from app.database import SessionDep
+from models.hotel import HotelBase, HotelFilter, HotelUpdate
+from services.auth import CurrentUserDep
+from services.hotels import (
+    new_hotel,
+    process_delete_hotel,
+    process_get_hotel,
+    process_get_hotels,
+    process_get_my_hotels,
+    update_hotel,
+)
+
+hotel = APIRouter(prefix="/hotels", tags=["Hotel"])
+
+
+@hotel.get("/")
+@cache_response(expire_minutes=5)
+async def get_hotels(
+    request: Request, db: SessionDep, filters: HotelFilter = Depends()
+):
+    return await process_get_hotels(filters=filters, db=db)
+
+
+@hotel.get("/my")
+async def get_my_hotels(current_user: CurrentUserDep, db: SessionDep):
+    return await process_get_my_hotels(id=current_user.id, db=db)
+
+
+@hotel.get("/{hotel_id}")
+async def get_hotel(hotel_id: int, db: SessionDep):
+    return await process_get_hotel(id=hotel_id, db=db)
+
+
+@hotel.post("/add")
+async def add_hotel(
+    hotel_data: HotelBase, current_user: CurrentUserDep, db: SessionDep
+):
+    return await new_hotel(hotel_data=hotel_data, id=current_user.id, db=db)
+
+
+@hotel.delete("/{hotel_id}")
+async def delete_hotel(hotel_id: int, current_user: CurrentUserDep, db: SessionDep):
+    return await process_delete_hotel(id=hotel_id, user_id=current_user.id, db=db)
+
+
+@hotel.patch("/{hotel_id}")
+async def patch_hotel(
+    hotel_id: int,
+    hotel_update: HotelUpdate,
+    current_user: CurrentUserDep,
+    db: SessionDep,
+):
+    return await update_hotel(
+        id=hotel_id, hotel_updata=hotel_update, user_id=current_user.id, db=db
+    )
