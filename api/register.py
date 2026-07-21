@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pwdlib import PasswordHash
 
-from app.database import SessionDep
+from database import SessionDep
 from models.register import (
     RefredhTokenRequest,
     UserBase,
@@ -12,7 +12,7 @@ from models.register import (
     UserRegister,
     UserUpdate,
 )
-from services.auth import (
+from services.register import (
     AuthServiceDep,
     CurrentUserDep,
     get_user,

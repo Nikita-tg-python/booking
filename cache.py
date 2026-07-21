@@ -7,7 +7,7 @@ import redis.asyncio as redis
 from fastapi import Request
 from fastapi.encoders import jsonable_encoder
 
-from app.database import setting
+from database import setting
 
 redis_client = redis.from_url(setting.redis_cache_url, decode_responses=True)
 

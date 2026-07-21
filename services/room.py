@@ -1,8 +1,8 @@
 from fastapi import HTTPException
 from sqlmodel import select
 
-from app.cache import delete_cache
-from app.database import SessionDep
+from cache import delete_cache
+from database import SessionDep
 from models.hotel import Hotel
 from models.room import Room, RoomAdd, RoomUpdate
 

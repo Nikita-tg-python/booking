@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
-from app.database import SessionDep
+from database import SessionDep
 from models.room import RoomAdd, RoomUpdate
-from services.auth import CurrentUserDep
+from services.register import CurrentUserDep
 from services.room import (
     process_delete_room,
     process_get_room,

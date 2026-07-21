@@ -3,8 +3,8 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import select
 
-from app.cache import clear_cache, delete_cache, get_cache, set_cache
-from app.database import SessionDep
+from cache import clear_cache, delete_cache, get_cache, set_cache
+from database import SessionDep
 from models.hotel import Hotel, HotelBase, HotelFilter, HotelUpdate
 from models.room import Room
 

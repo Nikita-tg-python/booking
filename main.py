@@ -3,11 +3,12 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from sqlmodel import SQLModel
 
-from app.api.hotels import hotel
-from app.api.register import reg
-from app.api.room import room
-from app.cache import redis_client
-from app.database import engine
+from api.booking import booking
+from api.hotels import hotel
+from api.register import reg
+from api.room import room
+from cache import redis_client
+from database import engine
 
 
 async def create_db():
@@ -37,3 +38,5 @@ app.include_router(reg)
 app.include_router(hotel)
 
 app.include_router(room)
+
+app.include_router(booking)

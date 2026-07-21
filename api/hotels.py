@@ -1,9 +1,8 @@
 from fastapi import APIRouter, Depends, Request
 
-from app.cache import cache_response
-from app.database import SessionDep
+from cache import cache_response
+from database import SessionDep
 from models.hotel import HotelBase, HotelFilter, HotelUpdate
-from services.auth import CurrentUserDep
 from services.hotels import (
     new_hotel,
     process_delete_hotel,
@@ -13,6 +12,7 @@ from services.hotels import (
     process_get_rooms,
     update_hotel,
 )
+from services.register import CurrentUserDep
 
 hotel = APIRouter(prefix="/hotels", tags=["Hotel"])
 

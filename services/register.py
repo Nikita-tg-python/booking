@@ -10,8 +10,8 @@ from pwdlib import PasswordHash
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import select
 
-from app.cache import delete_cache, get_cache, set_cache
-from app.database import SessionDep, setting
+from cache import delete_cache, get_cache, set_cache
+from database import SessionDep, setting
 from models.register import (
     SuperUser,
     Token,
@@ -199,10 +199,7 @@ async def process_register(user_data: UserRegister, auth_user, db):
     hashed_password = await auth_user.hash_pwd(user_data.password)
 
     user = SuperUser(
-        name=user_data.name,
-        surname=user_data.surname,
-        patronymic=user_data.patronymic,
-        email=user_data.email,
+        **user_data.model_dump(),
         hashed_password=hashed_password,
         superuser=False,
     )
