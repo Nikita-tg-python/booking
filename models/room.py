@@ -1,3 +1,4 @@
+from datetime import date
 from typing import TYPE_CHECKING
 
 from sqlmodel import Field, Relationship, SQLModel
@@ -17,11 +18,12 @@ class RoomBase(SQLModel):
 
 class Room(RoomBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
+    is_active: bool = True
 
     hotel_id: int | None = Field(default=None, foreign_key="hotel.id")
     hotel: "Hotel" = Relationship(back_populates="rooms")
 
-    bookings: "Booking" = Relationship(back_populates="room")
+    bookings: list["Booking"] = Relationship(back_populates="room")
 
 
 class RoomUpdate(SQLModel):
@@ -30,3 +32,22 @@ class RoomUpdate(SQLModel):
     children: int | None
     bed: str | None
     price: int | None = Field(index=True)
+
+
+class RoomFilter(SQLModel):
+    room_number: str
+    adults: int
+    children: int = Field(default=0)
+    bed: str
+    price: int = Field(index=True)
+    date_from: date
+    date_to: date
+
+
+class RoomAdd(SQLModel):
+    room_number: str
+    adults: int
+    children: int = Field(default=0)
+    bed: str
+    price: int = Field(index=True)
+    hotel_id: int

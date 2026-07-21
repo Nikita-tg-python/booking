@@ -58,7 +58,7 @@ async def register(
 
 @reg.get("/users/me")
 async def get_login_user(current_user: CurrentUserDep, db: SessionDep) -> UserBase:
-    return await get_user(id=current_user.id, db=db)
+    return await get_user(user_id=current_user.id, db=db)
 
 
 @reg.patch("/users/update")
@@ -67,7 +67,7 @@ async def user_rename(
     current_user: CurrentUserDep,
     db: SessionDep,
 ) -> UserBase:
-    return await process_user_rename(user=user, id=current_user.id, db=db)
+    return await process_user_rename(user=user, user_id=current_user.id, db=db)
 
 
 @reg.patch("/users/password/me")
@@ -80,7 +80,7 @@ async def password(
     return await new_password(
         pwd=user_passwords.password,
         new_pwd=user_passwords.new_password,
-        id=current_user.id,
+        user_id=current_user.id,
         auth_service=auth_service,
         db=db,
     )

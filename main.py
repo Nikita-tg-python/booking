@@ -5,11 +5,9 @@ from sqlmodel import SQLModel
 
 from app.api.hotels import hotel
 from app.api.register import reg
+from app.api.room import room
 from app.cache import redis_client
 from app.database import engine
-from models.booking import Booking
-from models.hotel import Hotel
-from models.room import Room
 
 
 async def create_db():
@@ -35,19 +33,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(reg)
+
 app.include_router(hotel)
 
-
-@app.get("/1")
-def get_1(r: Room):
-    return r
-
-
-@app.get("/2")
-def get_2(b: Booking):
-    return b
-
-
-@app.get("/3")
-def get_3(h: Hotel):
-    return h
+app.include_router(room)

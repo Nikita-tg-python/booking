@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
+    from models.booking import Booking
     from models.hotel import Hotel
 
 
@@ -41,7 +42,10 @@ class SuperUser(User, table=True):
     id: int | None = Field(default=None, primary_key=True)
     superuser: bool = False
 
+    points: int = 10000
+
     hotels: list["Hotel"] = Relationship(back_populates="user")
+    bookings: list["Booking"] = Relationship(back_populates="user")
 
 
 class Token(SQLModel):

@@ -222,14 +222,14 @@ async def process_register(user_data: UserRegister, auth_user, db):
     return user
 
 
-async def get_user(id: int, db: SessionDep):
+async def get_user(user_id: int, db: SessionDep):
 
-    user_cache = await get_cache(f"user:{id}")
+    user_cache = await get_cache(f"user:{user_id}")
 
     if user_cache:
         return user_cache
 
-    user_db = await db.get(SuperUser, id)
+    user_db = await db.get(SuperUser, user_id)
 
     if user_db is None:
         raise HTTPException(status_code=404, detail="User not found")
@@ -243,10 +243,10 @@ async def get_user(id: int, db: SessionDep):
     return user
 
 
-async def process_user_rename(user: UserUpdate, id: int, db: SessionDep):
+async def process_user_rename(user: UserUpdate, user_id: int, db: SessionDep):
     update_user = user.model_dump(exclude_unset=True)
 
-    user_db = await db.get(SuperUser, id)
+    user_db = await db.get(SuperUser, user_id)
 
     if user_db is None:
         raise HTTPException(status_code=404, detail="User not found")
@@ -270,9 +270,9 @@ async def process_user_rename(user: UserUpdate, id: int, db: SessionDep):
     return user_db
 
 
-async def new_password(pwd: str, new_pwd: str, id: int, auth_service, db):
+async def new_password(pwd: str, new_pwd: str, user_id: int, auth_service, db):
 
-    user_db = await db.get(SuperUser, id)
+    user_db = await db.get(SuperUser, user_id)
 
     if user_db is None:
         raise HTTPException(status_code=404, detail="User not found")
