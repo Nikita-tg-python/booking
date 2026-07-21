@@ -7,6 +7,8 @@ services:
       - POSTGRES_USER=nikita
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=booking
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U nikita -d booking"]
       interval: 5s
@@ -51,3 +53,5 @@ services:
     ports:
       - "6380:6379"
     command: redis-server --maxmemory 800mb --maxmemory-policy volatile-lru
+volumes:
+  postgres_data:
