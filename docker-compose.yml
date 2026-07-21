@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=nikita
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=booking
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nikita -d booking"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      redis_cache:
+        condition: service_started
+      redis_celery:
+        condition: service_started
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=${DB}
+      - CELERY_BROKER_URL=redis://redis_celery:6379/0
+
+  celery_worker:
+    build: .
+    command: celery -A worker worker --loglevel=info
+    depends_on:
+      redis_celery:
+        condition: service_started
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=${DB}
+      - CELERY_BROKER_URL=redis://redis_celery:6379/0
+
+  redis_cache:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --maxmemory 800mb --maxmemory-policy allkeys-lru
+
+  redis_celery:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    command: redis-server --maxmemory 800mb --maxmemory-policy volatile-lru
