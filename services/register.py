@@ -253,7 +253,6 @@ async def process_user_rename(user: UserUpdate, user_id: int, db: SessionDep):
 
     try:
         await db.commit()
-        await db.refresh(user_db)
 
     except IntegrityError:
         await db.rollback()
@@ -282,7 +281,6 @@ async def new_password(pwd: str, new_pwd: str, user_id: int, auth_service, db):
 
     db.add(user_db)
     await db.commit()
-    await db.refresh(user_db)
 
     await delete_cache(str(user_db.id))
     return user_db

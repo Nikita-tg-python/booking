@@ -110,7 +110,6 @@ async def process_delete_hotel(hotel_id: int, user_id: int, db: SessionDep):
 
     db.add(hotel)
     await db.commit()
-    await db.refresh(hotel)
 
     await clear_cache("/hotels")
 
@@ -135,8 +134,13 @@ async def update_hotel(
 
     await delete_cache(key=f"hotel:{hotel_id}")
 
-    db.add(hotel_data)
-    await db.commit()
-    await db.refresh(hotel_data)
+    try:
+        await db.commit()
+
+    except IntegrityError:
+        await db.rollback()
+        raise HTTPException(
+            status_code=409, detail="Hotel with this name already exists"
+        )
 
     return hotel_data

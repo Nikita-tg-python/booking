@@ -83,7 +83,6 @@ async def process_update_room(
 
     db.add(room)
     await db.commit()
-    await db.refresh(room)
 
     await delete_cache(f"hotel_rooms:{room.hotel_id}")
 
